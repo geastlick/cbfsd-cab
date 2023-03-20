@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="https://ww.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Cab Booking Application</title>
+	<script th:fragment="headerincl"></script>
+</head>
+<body th:fragment="content">
+<div style="text-align: center;"><br/><br/><br/>
+	<h1>Manage Drivers</h1>
+<br/><br/></div>
+<table class="table table-striped table-hover">
+	<thead>
+	<tr>
+		<th>Name</th>
+		<th>License</th>
+		<th>Cab Number</th>
+	</tr>
+	</thead>
+	<tr th:each="driver: ${drivers}">
+		<td th:text="${driver.name}"></td>
+		<td th:text="${driver.license}"></td>
+		<td>
+			<span th:if="${driver.cab == null}"></span>
+			<span th:unless="${driver.cab == null}" th:text="${driver.cab.cabNumber}"></span>
+		
+		</td>
+	</tr>
+	<tr th:if="${drivers.size() == 0}">
+	    <td colspan=8><b>No Drivers</b></td>
+	</tr>
+</table>
+
+</body>
+</html>

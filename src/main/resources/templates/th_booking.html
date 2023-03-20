@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="https://ww.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Cab Booking Application</title>
+	<script th:fragment="headerincl"></script>
+</head>
+<body th:fragment="content">
+<div style="text-align: center;"><br/><br/><br/>
+	<h1>Manage Bookings</h1>
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createBooking">Create</button>
+<br/><br/></div>
+<table class="table table-striped table-hover">
+	<thead>
+	<tr>
+		<th>Customer Name</th>
+		<th>Customer Email</th>
+		<th>Customer Phone</th>
+		<th>Pickup Location</th>
+		<th>Call Time</th>
+		<th>Pickup Time</th>
+		<th>Dropoff</th>
+		<th>Driver</th>
+	</tr>
+	</thead>
+	<tr th:each="openBooking: ${openBookings}">
+		<td th:text="${openBooking.customerName}"></td>
+		<td th:text="${openBooking.customerEmail}"></td>
+		<td th:text="${openBooking.customerPhone}"></td>
+		<td th:text="${openBooking.pickupLocation}"></td>
+		<td th:text="${openBooking.callTime}"></td>
+		<td>
+			<form th:if="${openBooking.pickupTime==null && openBooking.driver != null}" th:action="@{/webapp/bookings/pickup}" method="POST">
+				<input type="hidden" name="id" th:value="${openBooking.id}">
+				<button type="submit" class="btn btn-primary">Pick Up Customer</button>
+			</form>
+			<span th:unless="${openBooking.pickupTime==null && openBooking.driver != null}" th:text="${openBooking.pickupTime}"></span>
+		</td>
+		<td>
+			<span th:if="${openBooking.pickupTime!=null}"><button th:id='${"BTN_"+openBooking.id}' type="button" class="btn btn-primary trigger" data-bs-toggle="modal" data-bs-target="#dropOff">Drop Off</button></span>
+			<span th:unless="${openBooking.pickupTime!=null}" th:text="${openBooking.dropoffTime}"></span>
+		</td>
+		<td>
+			<form th:if="${openBooking.driver == null}" th:action="@{/webapp/bookings/assign}" method="POST">
+				<input type="hidden" name="id" th:value="${openBooking.id}">
+				<button type="submit" class="btn btn-primary">Assign Driver</button>
+			</form>
+			<span th:unless="${openBooking.driver == null}" th:text="${openBooking.driver.name}"></span>
+		</td>
+	</tr>
+	<tr th:if="${openBookings.size() == 0}">
+	    <td colspan=8><b>No Bookings</b></td>
+	</tr>
+</table>
+
+<div id="createBooking" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create Booking</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      	<form th:action="@{/webapp/bookings/book}" method="POST">
+      		<div class="mb-3">
+			  <label for="customerName" class="form-label">Customer Name</label>
+			  <input type="text" class="form-control" id="customerName" name="customerName" required>
+			</div>
+      		<div class="mb-3">
+			  <label for="customerEmail" class="form-label">Customer Email</label>
+			  <input type="email" class="form-control" id="customerEmail" name="customerEmail">
+			</div>
+      		<div class="mb-3">
+			  <label for="customerPhone" class="form-label">Customer Phone</label>
+			  <input type="number" class="form-control" id="customerPhone" name="customerPhone" required>
+			</div>
+      		<div class="mb-3">
+			  <label for="pickupLocation" class="form-label">Pickup Location</label>
+			  <textarea rows="3" class="form-control" id="pickupLocation" name="pickupLocation" required></textarea>
+			</div>
+			<hr />
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+	        <button type="submit" class="btn btn-primary">Book</button>
+		</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="dropOff" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Drop Off</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      	<form th:action="@{/webapp/bookings/dropoff}" method="POST">
+      		<input type="hidden" name="id" id="dropoffId" value="">
+      		<div class="mb-3">
+			  <label for="passengers" class="form-label"># Passengers</label>
+			  <input type="number" class="form-control" id="passengers" name="passengers" required>
+			</div>
+      		<div class="mb-3">
+			  <label for="miles" class="form-label"># Miles</label>
+			  <input type="number" step=0.01 class="form-control" id="miles" name="miles" required>
+			</div>
+      		<div class="mb-3">
+			  <label for="waitTime" class="form-label">Wait Time (Minutes)</label>
+			  <input type="number" step=0.01 class="form-control" id="waitMinutes" name="waitMinutes" required>
+			</div>
+			<br />
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+	        <button type="submit" class="btn btn-primary">Drop Off</button>
+		</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var elements = document.getElementsByClassName('trigger');
+for(var i=0; i<elements.length; i++) {
+	elements[i].addEventListener("click", function(e){
+	  document.getElementById('dropoffId').value = e.target.id.substr(4);        
+	});
+}
+</script>
+</body>
+</html>

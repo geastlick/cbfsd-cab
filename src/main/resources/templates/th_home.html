@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="https://ww.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Welcome</title>
+<meta th:fragment="headerincl"></meta>
+</head>
+<body th:fragment="content">
+<div style="text-align: center;"><br/><br/><br/><h1>Welcome Home!</h1><br/><br/></div>
+<div th:utext='${"JSON<hr/>" + homeBean.getBookings("JSON")}'></div><br />
+<div th:utext='${"TEXT<hr/>" + homeBean.getBookings("TEXT")}'></div><br />
+<div th:utext='${"HTML<hr/>" + homeBean.getBookings("HTML")}'></div><br />
+<div>XML<hr/><span th:text='${homeBean.getBookings("XML")}'></span></div><br />
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="https://ww.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Cab Booking Application</title>
+	<script th:fragment="headerincl"></script>
+</head>
+<body th:fragment="content">
+<div style="text-align: center;"><br/><br/><br/>
+	<h1>Manage Cabs</h1>
+<br/><br/></div>
+<table class="table table-striped table-hover">
+	<thead>
+	<tr>
+		<th>Cab Number</th>
+		<th>In Service</th>
+	</tr>
+	</thead>
+	<tr th:each="cab: ${cabs}">
+		<td th:text="${cab.cabNumber}"></td>
+		<td>
+			<div class="form-check">
+  				<input class="form-check-input" type="checkbox" value="${cab.inService}" id="flexCheckDefault" disabled="disabled" th:checked="${cab.inService}">
+  				<label class="form-check-label" for="flexCheckDefault">
+    				In Service
+				</label>
+			</div>
+		</td>
+	</tr>
+	<tr th:if="${cabs.size() == 0}">
+	    <td colspan=8><b>No Cabs</b></td>
+	</tr>
+</table>
+
+</body>
+</html>
